@@ -1,3 +1,6 @@
+using Health_Care_System.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Health_Care_System;
 
 public class Program
@@ -5,6 +8,9 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddDbContext<HealthCareContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Add services to the container.
         builder.Services.AddAuthorization();
