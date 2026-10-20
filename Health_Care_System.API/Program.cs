@@ -21,6 +21,7 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         
+        // Scoped Context
         builder.Services.AddDbContext<HealthCareContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
