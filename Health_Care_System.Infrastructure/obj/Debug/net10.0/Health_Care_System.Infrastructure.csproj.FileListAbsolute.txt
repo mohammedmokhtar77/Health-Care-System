@@ -1,3 +1,5 @@
+E:\Omar\Courses\Tracks\Web Development\DEPI\Assignments\Health Care System\Health_Care_System.Infrastructure\bin\Debug\net10.0\Persistence\Seeding\Data\Doctors.json
+E:\Omar\Courses\Tracks\Web Development\DEPI\Assignments\Health Care System\Health_Care_System.Infrastructure\bin\Debug\net10.0\Persistence\Seeding\Data\Patients.json
 E:\Omar\Courses\Tracks\Web Development\DEPI\Assignments\Health Care System\Health_Care_System.Infrastructure\bin\Debug\net10.0\Health_Care_System.Infrastructure.deps.json
 E:\Omar\Courses\Tracks\Web Development\DEPI\Assignments\Health Care System\Health_Care_System.Infrastructure\bin\Debug\net10.0\Health_Care_System.Infrastructure.runtimeconfig.json
 E:\Omar\Courses\Tracks\Web Development\DEPI\Assignments\Health Care System\Health_Care_System.Infrastructure\bin\Debug\net10.0\Health_Care_System.Infrastructure.dll
