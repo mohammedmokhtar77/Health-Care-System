@@ -1,5 +1,7 @@
-namespace Health_Care_System.API.Entities;
-public class Patient
+using Health_Care_System.Domain.Entities.Common;
+
+namespace Health_Care_System.Domain.Entities;
+public class Patient : AuditableEntity
 {
     public int Id { get; set; }
 
