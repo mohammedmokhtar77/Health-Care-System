@@ -1,4 +1,4 @@
-namespace Health_Care_System.Entities;
+namespace Health_Care_System.API.Entities;
 public class Patient
 {
     public int Id { get; set; }
