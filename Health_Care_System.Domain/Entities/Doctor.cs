@@ -1,4 +1,6 @@
-public class Doctor
+using Health_Care_System.Domain.Entities.Common;
+
+public class Doctor : AuditableEntity
 {
     public int Id { get; set; }
 
