@@ -1,3 +1,5 @@
+using Health_Care_System.API.Entities;
+
 public class Appointment
 {
     // Composite Primary Key + Foreign Key
