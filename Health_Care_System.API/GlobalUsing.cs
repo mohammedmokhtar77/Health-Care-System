@@ -1,0 +1,1 @@
+global using Health_Care_System.API.Entities;
