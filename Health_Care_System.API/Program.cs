@@ -1,7 +1,7 @@
-using Health_Care_System.Data;
+using Health_Care_System.API.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Health_Care_System;
+namespace Health_Care_System.API;
 
 public class Program
 {
