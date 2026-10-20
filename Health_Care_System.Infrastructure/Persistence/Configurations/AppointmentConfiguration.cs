@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Health_Care_System.API.Configurations;
+namespace Health_Care_System.Infrastructure.Persistence.Configurations;
 
 public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 {
@@ -25,5 +25,7 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .WithMany(d => d.Appointments)
             .HasForeignKey(a => a.DoctorId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.HasQueryFilter(a => !a.IsDeleted);
     }
 }
