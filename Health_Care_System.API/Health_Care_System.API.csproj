@@ -19,10 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Health_Care_System.Infrastructure\Health_Care_System.Infrastructure.csproj" />
     </ItemGroup>
 
