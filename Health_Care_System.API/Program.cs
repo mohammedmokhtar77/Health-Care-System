@@ -1,11 +1,13 @@
+using Health_Care_System.API.Extensions;
 using Health_Care_System.Infrastructure.Persistence;
+using Health_Care_System.Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
 
 namespace Health_Care_System.API;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +16,9 @@ public class Program
         builder.Services.AddAuthorization();
         
         builder.Services.AddControllers();
-        
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
 
-        
-        // Scoped Context
-        builder.Services.AddDbContext<HealthCareContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddSwaggerServices();
+        builder.Services.AddDatabaseServices(builder.Configuration);
 
 
         var app = builder.Build();
@@ -34,7 +29,9 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
+        
+        await app.MigrateAndSeedDatabaseAsync();
+        
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
