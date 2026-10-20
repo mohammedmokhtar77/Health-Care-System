@@ -1,6 +1,7 @@
+using Health_Care_System.API.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Health_Care_System.Data;
+namespace Health_Care_System.API.Data;
 
 public class HealthCareContext : DbContext
 {
