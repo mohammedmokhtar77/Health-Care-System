@@ -1,4 +1,6 @@
+using Health_Care_System.Domain.Repositories.Interfaces;
 using Health_Care_System.Infrastructure.Persistence;
+using Health_Care_System.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Health_Care_System.API.Extensions;
@@ -22,6 +24,14 @@ public static class ServiceCollectionExtensions
         services.AddDbContext<HealthCareContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+        return services;
+    }
+
+    public static IServiceCollection AddRepositoryServices(this IServiceCollection services)
+    {
+        services.AddScoped<IPatientRepository, PatientRepository>();
+        services.AddScoped<IDoctorRepository, DoctorRepository>();
+        services.AddScoped<IAppointmentRepository, AppointmentRepository>();
         return services;
     }
 }
