@@ -1,7 +1,8 @@
+using Health_Care_System.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Health_Care_System.Configurations;
+namespace Health_Care_System.API.Configurations;
 
 public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 {
