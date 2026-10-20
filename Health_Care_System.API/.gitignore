@@ -1,9 +1,11 @@
+
 # Build results
-[Bb]in/
-[Oo]bj/
-[Dd]ebug/
-[Rr]elease/
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
 artifacts/
+publish/
 
 # Visual Studio
 .vs/
@@ -11,13 +13,11 @@ artifacts/
 *.user
 *.userosscache
 *.sln.docstates
+*.rsuser
 
 # JetBrains Rider
 .idea/
 *.sln.iml
-
-# User-specific files
-*.rsuser
 
 # NuGet
 *.nupkg
@@ -25,8 +25,8 @@ artifacts/
 packages/
 
 # Test results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+**/TestResults*/
+**/BuildLog.*
 
 # Logs
 *.log
@@ -44,10 +44,14 @@ secrets.json
 # Environment variables
 .env
 .env.*
+!.env.example
 
 # Coverage reports
 coverage/
 coverage.*
 
-# Publish output
-publish/
+# Build cache and generated files
+*.cache
+*.pdb
+*.dll
+*.sourcelink.json
