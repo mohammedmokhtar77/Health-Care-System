@@ -1,4 +1,4 @@
-using Health_Care_System.API.Data;
+using Health_Care_System.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Health_Care_System.API;
