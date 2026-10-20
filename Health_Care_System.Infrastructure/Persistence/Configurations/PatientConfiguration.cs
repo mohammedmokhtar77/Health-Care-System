@@ -1,8 +1,8 @@
-using Health_Care_System.API.Entities;
+using Health_Care_System.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Health_Care_System.API.Configurations;
+namespace Health_Care_System.Infrastructure.Persistence.Configurations;
 
 public class PatientConfiguration : IEntityTypeConfiguration<Patient>
 {
@@ -21,5 +21,8 @@ public class PatientConfiguration : IEntityTypeConfiguration<Patient>
             .WithOne(a => a.Patient)
             .HasForeignKey(a => a.PatientId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.HasQueryFilter(p => !p.IsDeleted);
+
     }
 }
