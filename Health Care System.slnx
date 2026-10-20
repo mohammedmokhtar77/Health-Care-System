@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="Health Care System/Health Care System.csproj" />
+  <Project Path="Health_Care_System.API/Health_Care_System.API.csproj" />
+  <Project Path="Health_Care_System.Domain/Health_Care_System.Domain.csproj" />
+  <Project Path="Health_Care_System.Infrastructure/Health_Care_System.Infrastructure.csproj" />
 </Solution>
