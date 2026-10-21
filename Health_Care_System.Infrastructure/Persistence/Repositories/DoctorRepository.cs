@@ -48,8 +48,7 @@ public class DoctorRepository(HealthCareContext context) : IDoctorRepository
 
         if (doctor is null)
             return;
-
-        context.Doctors.Remove(doctor);
+        doctor.IsDeleted = true;
         await context.SaveChangesAsync(cancellationToken);
     }
 }
