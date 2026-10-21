@@ -47,8 +47,9 @@ public class PatientRepository(HealthCareContext context) : IPatientRepository
         
         if (patient is null)
             return;
+
+        patient.IsDeleted = true;
         
-        context.Patients.Remove(patient);
         await context.SaveChangesAsync(cancellationToken);
     }
 }
