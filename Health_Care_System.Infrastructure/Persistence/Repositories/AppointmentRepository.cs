@@ -67,7 +67,7 @@ public class AppointmentRepository(HealthCareContext context)
         if (appointment is null)
             return;
 
-        context.Appointments.Remove(appointment);
+        appointment.IsDeleted = true;
         await context.SaveChangesAsync(cancellationToken);
     }
 }
