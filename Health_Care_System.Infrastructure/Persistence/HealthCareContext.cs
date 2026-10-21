@@ -45,8 +45,7 @@ public class HealthCareContext : DbContext
                     entry.Property(x => x.CreatedBy)
                         .IsModified = false;
 
-                    entry.Entity
-                         .ModifiedDate = now;
+                    entry.Entity.ModifiedDate = now;
                     break;
                 
                 case EntityState.Deleted:
