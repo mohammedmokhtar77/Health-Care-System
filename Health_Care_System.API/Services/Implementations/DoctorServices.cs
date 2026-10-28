@@ -17,7 +17,7 @@ public class DoctorServices
        var doctors = await repository
            .GetAllAsync(pageNumber, pageSize, cancellationToken);
        
-       var doctorsDto = mapper.Map<IReadOnlyList<DoctorDto>>(doctors);
+       var doctorsDto = mapper.Map<IReadOnlyList<DoctorDto>>(doctors.Items);
        
        var result = new PaginatedList<DoctorDto>(
            doctorsDto,
