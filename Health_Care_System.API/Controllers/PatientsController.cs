@@ -1,5 +1,7 @@
+using AutoMapper;
 using Health_Care_System.API.DTOs.Patients;
 using Health_Care_System.Domain.Entities;
+using Health_Care_System.Domain.Entities.Common.Pagination;
 using Health_Care_System.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,26 +9,44 @@ namespace Health_Care_System.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PatientController (IPatientRepository repository) : ControllerBase
+public class PatientController(IPatientRepository repository , IMapper mapper)
+    : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<PatientDto>>> 
-        GetAllPatients(CancellationToken cancellationToken)
+    public async Task<IActionResult> 
+        GetAllPatients(
+            int pageNumber, int pageSize,
+            CancellationToken cancellationToken)
     {
-        var patients = await repository.GetAllAsync(cancellationToken);
-        var patientsDto = patients.Select(p => new PatientDto(
-            p.Id , p.Name , p.DateOfBirth
-            )).ToList();
-        return Ok(patientsDto);
+        var patients = await 
+            repository.GetAllAsync(
+                pageNumber
+                , pageSize, 
+                cancellationToken);
+        
+        var patientsDto = mapper.Map<IReadOnlyList<PatientDto>>
+            (patients.Items);
+        
+        var result = new PaginatedList<PatientDto>(
+            patientsDto,
+             patients.TotalCount
+            , patients.PageNumber 
+            , patients.PageSize);
+        
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<PatientDto>> GetById(int id , CancellationToken cancellationToken)
+    public async Task<ActionResult<PatientDto>>
+        GetById(int id , CancellationToken cancellationToken)
     {
         var patient = await repository.GetByIdAsync(id, cancellationToken);
+        
         if (patient is null)
             return NotFound();
-        var patientDto = new PatientDto(patient.Id, patient.Name, patient.DateOfBirth);
+        
+        var patientDto = mapper.Map<PatientDto>(patient);
+        
         return Ok(patientDto);
     }
 
@@ -36,13 +56,12 @@ public class PatientController (IPatientRepository repository) : ControllerBase
         , CancellationToken cancellationToken
     )
     {
-        var patient = new Patient()
-        {
-            Name = patientDto.Name,
-            DateOfBirth = patientDto.DateOfBirth
-        };
+        
+        var patient = mapper.Map<Patient>(patientDto);
+        
         await repository.AddAsync(patient, cancellationToken);
-        var result = new PatientDto(patient.Id, patient.Name, patient.DateOfBirth);
+        
+        var result = mapper.Map<PatientDto>(patient);
         
         return CreatedAtAction(nameof(GetById), new { id = patient.Id }, result);
     }
@@ -53,10 +72,12 @@ public class PatientController (IPatientRepository repository) : ControllerBase
     )
     {
         var patient = await repository.GetByIdAsync(id, cancellationToken);
+        
         if (patient is null)
             return NotFound();
-        patient.Name = patientDto.Name;
-        patient.DateOfBirth = patientDto.DateOfBirth;
+        
+        mapper.Map(patientDto, patient);
+        
         await repository.UpdateAsync(patient, cancellationToken);
 
         return NoContent();
