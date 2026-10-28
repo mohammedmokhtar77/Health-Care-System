@@ -1,4 +1,6 @@
 using Health_Care_System.API.DTOs.Mapping;
+using Health_Care_System.API.Services.Implementations;
+using Health_Care_System.API.Services.Interfaces;
 using Health_Care_System.Domain.Repositories.Interfaces;
 using Health_Care_System.Infrastructure.Persistence;
 using Health_Care_System.Infrastructure.Persistence.Repositories;
@@ -33,6 +35,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        services.AddScoped<IDoctorService, DoctorServices>();
+        services.AddScoped<IPatientService, PatientServices>();
+        services.AddScoped<IAppointmentService, AppointmentServices>();
         return services;
     }
 
