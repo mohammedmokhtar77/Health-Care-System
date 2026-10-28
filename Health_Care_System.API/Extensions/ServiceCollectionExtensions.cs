@@ -1,3 +1,4 @@
+using Health_Care_System.API.DTOs.Mapping;
 using Health_Care_System.Domain.Repositories.Interfaces;
 using Health_Care_System.Infrastructure.Persistence;
 using Health_Care_System.Infrastructure.Persistence.Repositories;
@@ -32,6 +33,17 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IPatientRepository, PatientRepository>();
         services.AddScoped<IDoctorRepository, DoctorRepository>();
         services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+        return services;
+    }
+
+    public static IServiceCollection AddMappingServices(this IServiceCollection services)
+    {
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.AddProfile<PatientProfile>();
+            cfg.AddProfile<DoctorProfile>();
+            cfg.AddProfile<AppointmentProfile>();
+        });
         return services;
     }
 }
