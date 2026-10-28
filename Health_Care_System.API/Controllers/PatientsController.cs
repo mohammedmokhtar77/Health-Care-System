@@ -1,97 +1,110 @@
-using AutoMapper;
 using Health_Care_System.API.DTOs.Patients;
-using Health_Care_System.Domain.Entities;
-using Health_Care_System.Domain.Entities.Common.Pagination;
-using Health_Care_System.Domain.Repositories.Interfaces;
+using Health_Care_System.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Health_Care_System.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PatientController(IPatientRepository repository , IMapper mapper)
-    : ControllerBase
+public class PatientController(
+    IPatientService patientService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> 
-        GetAllPatients(
-            int pageNumber, int pageSize,
-            CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllPatients(
+        int pageNumber = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
     {
-        var patients = await 
-            repository.GetAllAsync(
-                pageNumber
-                , pageSize, 
-                cancellationToken);
-        
-        var patientsDto = mapper.Map<IReadOnlyList<PatientDto>>
-            (patients.Items);
-        
-        var result = new PaginatedList<PatientDto>(
-            patientsDto,
-             patients.TotalCount
-            , patients.PageNumber 
-            , patients.PageSize);
-        
-        return Ok(result);
+        var result = await patientService.GetAllAsync(
+            pageNumber,
+            pageSize,
+            cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { result.Error });
+
+        return Ok(result.Data);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<PatientDto>>
-        GetById(int id , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetById(
+        int id,
+        CancellationToken cancellationToken)
     {
-        var patient = await repository.GetByIdAsync(id, cancellationToken);
-        
-        if (patient is null)
-            return NotFound();
-        
-        var patientDto = mapper.Map<PatientDto>(patient);
-        
-        return Ok(patientDto);
+        var result = await patientService.GetByIdAsync(
+            id,
+            cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Patient not found.")
+                return NotFound(new { result.Error });
+
+            return BadRequest(new { result.Error });
+        }
+
+        return Ok(result.Data);
     }
 
     [HttpPost]
-    public async Task<ActionResult<PatientDto>> Create(
-         CreatePatientDto patientDto
-        , CancellationToken cancellationToken
-    )
+    public async Task<IActionResult> Create(
+        CreatePatientDto dto,
+        CancellationToken cancellationToken)
     {
-        
-        var patient = mapper.Map<Patient>(patientDto);
-        
-        await repository.AddAsync(patient, cancellationToken);
-        
-        var result = mapper.Map<PatientDto>(patient);
-        
-        return CreatedAtAction(nameof(GetById), new { id = patient.Id }, result);
+        var result = await patientService.CreateAsync(
+            dto,
+            cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { result.Error });
+
+        var patient = result.Data!;
+
+        return CreatedAtAction(
+            nameof(GetById),
+            new { id = patient.Id },
+            patient);
     }
 
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
-        int id, UpdatePatientDto patientDto, CancellationToken cancellationToken
-    )
+        int id,
+        UpdatePatientDto dto,
+        CancellationToken cancellationToken)
     {
-        var patient = await repository.GetByIdAsync(id, cancellationToken);
-        
-        if (patient is null)
-            return NotFound();
-        
-        mapper.Map(patientDto, patient);
-        
-        await repository.UpdateAsync(patient, cancellationToken);
+        var result = await patientService.UpdateAsync(
+            id,
+            dto,
+            cancellationToken);
+
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Patient not found.")
+                return NotFound(new { result.Error });
+
+            return BadRequest(new { result.Error });
+        }
 
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        int id,
+        CancellationToken cancellationToken)
     {
-        var patient = await repository.GetByIdAsync(id, cancellationToken);
+        var result = await patientService.DeleteAsync(
+            id,
+            cancellationToken);
 
-        if (patient is null)
-            return NotFound();
-        await repository.DeleteAsync(id , cancellationToken);
-        
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Patient not found.")
+                return NotFound(new { result.Error });
+
+            return BadRequest(new { result.Error });
+        }
+
         return NoContent();
     }
 }
