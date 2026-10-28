@@ -54,10 +54,17 @@ public class
             new { id = doctor.Id }, doctor);
     }
 
+    
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update(int id, UpdateDoctorDto dto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(
+        int id,
+        UpdateDoctorDto dto,
+        CancellationToken cancellationToken)
     {
-        var result = await service.GetByIdAsync(id, cancellationToken);
+        var result = await service.Update(
+            id,
+            dto,
+            cancellationToken);
 
         if (!result.IsSuccess)
         {
@@ -66,22 +73,28 @@ public class
 
             return BadRequest(new { result.Error });
         }
-        
+
         return NoContent();
     }
+
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete(
+        int id,
+        CancellationToken cancellationToken)
     {
-        var result = await service.GetByIdAsync(id, cancellationToken);
+        var result = await service.DeleteAsync(
+            id,
+            cancellationToken);
 
         if (!result.IsSuccess)
         {
-            if (result.Error == "Doctor not found.")
+            if (result.Error == "Doctor Not Found.")
                 return NotFound(new { result.Error });
 
             return BadRequest(new { result.Error });
         }
-        
-        return NoContent();
+
+        return NoContent(); 
     }
+
 }
