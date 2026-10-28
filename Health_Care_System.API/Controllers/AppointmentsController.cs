@@ -1,7 +1,5 @@
-using AutoMapper;
 using Health_Care_System.API.DTOs.Appointments;
-using Health_Care_System.Domain.Entities;
-using Health_Care_System.Domain.Repositories.Interfaces;
+using Health_Care_System.API.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Health_Care_System.API.Controllers;
@@ -9,88 +7,87 @@ namespace Health_Care_System.API.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class AppointmentsController(
-    IAppointmentRepository repository,
-    IMapper mapper) : ControllerBase
+    IAppointmentService appointmentService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<AppointmentDto>>> GetAppointments(
+    public async Task<IActionResult> GetAppointments(
         CancellationToken cancellationToken)
     {
-        var appointments = await repository.GetAllAsync(cancellationToken);
+        var result = await appointmentService.GetAllAsync(
+            cancellationToken);
 
-        var appointmentsDto = mapper.Map<IReadOnlyList<AppointmentDto>>(
-            appointments);
+        if (!result.IsSuccess)
+            return BadRequest(new { result.Error });
 
-        return Ok(appointmentsDto);
+        return Ok(result.Data);
     }
 
     [HttpGet("{patientId:int}/{doctorId:int}")]
-    public async Task<ActionResult<AppointmentDto>> GetAppointment(
+    public async Task<IActionResult> GetAppointment(
         int patientId,
         int doctorId,
         CancellationToken cancellationToken)
     {
-        var appointment = await repository.GetByIdAsync(
+        var result = await appointmentService.GetByIdAsync(
             patientId,
             doctorId,
             cancellationToken);
 
-        if (appointment is null)
-            return NotFound();
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Appointment not found.")
+                return NotFound(new { result.Error });
 
-        var appointmentDto = mapper.Map<AppointmentDto>(appointment);
+            return BadRequest(new { result.Error });
+        }
 
-        return Ok(appointmentDto);
+        return Ok(result.Data);
     }
 
     [HttpPost]
-    public async Task<ActionResult<AppointmentDto>> CreateAppointment(
-        CreateAppointmentDto appointmentDto,
+    public async Task<IActionResult> CreateAppointment(
+        CreateAppointmentDto dto,
         CancellationToken cancellationToken)
     {
-        var appointment = mapper.Map<Appointment>(appointmentDto);
-
-        await repository.AddAsync(appointment, cancellationToken);
-
-        // Reload the appointment to retrieve Patient and Doctor navigation data.
-        var createdAppointment = await repository.GetByIdAsync(
-            appointment.PatientId,
-            appointment.DoctorId,
+        var result = await appointmentService.CreateAsync(
+            dto,
             cancellationToken);
 
-        if (createdAppointment is null)
-            return Problem("The appointment was created but could not be retrieved.");
+        if (!result.IsSuccess)
+            return BadRequest(new { result.Error });
 
-        var response = mapper.Map<AppointmentDto>(createdAppointment);
+        var appointment = result.Data!;
 
         return CreatedAtAction(
             nameof(GetAppointment),
             new
             {
-                patientId = createdAppointment.PatientId,
-                doctorId = createdAppointment.DoctorId
+                patientId = appointment.PatientId,
+                doctorId = appointment.DoctorId
             },
-            response);
+            appointment);
     }
 
     [HttpPut("{patientId:int}/{doctorId:int}")]
     public async Task<IActionResult> UpdateAppointment(
         int patientId,
         int doctorId,
-        UpdateAppointmentDto appointmentDto,
+        UpdateAppointmentDto dto,
         CancellationToken cancellationToken)
     {
-        var appointment = await repository.GetByIdAsync(
+        var result = await appointmentService.UpdateAsync(
             patientId,
             doctorId,
+            dto,
             cancellationToken);
 
-        if (appointment is null)
-            return NotFound();
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Appointment not found.")
+                return NotFound(new { result.Error });
 
-        mapper.Map(appointmentDto, appointment);
-
-        await repository.UpdateAsync(appointment, cancellationToken);
+            return BadRequest(new { result.Error });
+        }
 
         return NoContent();
     }
@@ -101,15 +98,18 @@ public class AppointmentsController(
         int doctorId,
         CancellationToken cancellationToken)
     {
-        var appointment = await repository.GetByIdAsync(
+        var result = await appointmentService.DeleteAsync(
             patientId,
             doctorId,
             cancellationToken);
 
-        if (appointment is null)
-            return NotFound();
+        if (!result.IsSuccess)
+        {
+            if (result.Error == "Appointment not found.")
+                return NotFound(new { result.Error });
 
-        await repository.DeleteAsync(patientId, doctorId, cancellationToken);
+            return BadRequest(new { result.Error });
+        }
 
         return NoContent();
     }
