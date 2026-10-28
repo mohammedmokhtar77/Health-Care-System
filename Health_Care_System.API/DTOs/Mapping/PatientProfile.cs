@@ -9,8 +9,10 @@ public class PatientProfile : Profile
 {
     public PatientProfile()
     {
-        CreateMap<Patient, PatientDto>();
-        CreateMap<CreatePatientDto, Patient>();
+        CreateMap<Patient, PatientDto>()
+            .ForCtorParam(
+                nameof(PatientDto.FullName),
+                options => options.MapFrom(source => source.Name));        CreateMap<CreatePatientDto, Patient>();
         CreateMap<UpdatePatientDto, Patient>();
     }
 }
