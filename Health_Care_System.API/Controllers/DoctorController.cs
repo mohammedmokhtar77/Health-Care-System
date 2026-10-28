@@ -1,4 +1,7 @@
+using AutoMapper;
 using Health_Care_System.API.DTOs.Doctors;
+using Health_Care_System.Domain.Entities.Common.Pagination;
+using Health_Care_System.Domain.Entities.Common.Results;
 using Health_Care_System.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,37 +9,53 @@ namespace Health_Care_System.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class DoctorController(IDoctorRepository repository) : ControllerBase
+public class 
+    DoctorController(IDoctorRepository repository , IMapper mapper ) 
+    : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<DoctorDto>>> GetAllDoctors(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllDoctors(
+        int pageNumber, int pageSize 
+        , CancellationToken cancellationToken
+    )
     {
-        var doctors = await repository.GetAllAsync(cancellationToken);
-        var doctorsDto = doctors.Select(
-                d => new DoctorDto(
-                    d.Id, d.Name, d.Specialization))
-            .ToList();
+        var doctors = await repository
+            .GetAllAsync(pageNumber, pageSize, cancellationToken);
         
-        return Ok(doctorsDto);
+        var doctorsDto = mapper.Map<IReadOnlyList<DoctorDto>>(doctors.Items);
+
+        var result = new 
+            PaginatedList<DoctorDto>(
+                doctorsDto,
+                doctors.TotalCount
+                ,  doctors.PageNumber
+                , doctors.PageSize);
+
+        return Ok(result);
     }
     
     [HttpGet("{id:int}")]
     public async Task<ActionResult<DoctorDto>> GetDoctor(int id, CancellationToken cancellationToken)
     {
         var doctor =await repository.GetByIdAsync(id, cancellationToken);
+        
         if (doctor is null)
             return NotFound();
-        var doctorDto = new DoctorDto(doctor.Id, doctor.Name, doctor.Specialization);
+        
+        var doctorDto = mapper.Map<DoctorDto>(doctor);
+        
         return Ok(doctorDto);
     }
 
     [HttpPost]
     public async Task<ActionResult<DoctorDto>> Create(CreateDoctorDto doctorDto , CancellationToken cancellationToken)
     {
-        var doctor = new Doctor() { Name = doctorDto.Name, Specialization = doctorDto.Specialization };
+        var doctor = mapper.Map<Doctor>(doctorDto);
+        
         await repository.AddAsync(doctor, cancellationToken);
 
-        var result = new DoctorDto(doctor.Id, doctor.Name, doctor.Specialization);
+        var result = mapper.Map<DoctorDto>(doctor);
+        
         return CreatedAtAction(nameof(GetDoctor), new { id = doctor.Id }, result);
     }
 
@@ -48,8 +67,7 @@ public class DoctorController(IDoctorRepository repository) : ControllerBase
         if (doctor is null)
             return NotFound();
 
-        doctor.Name = dto.Name;
-        doctor.Specialization = dto.Specialization;
+        mapper.Map(dto, doctor);
 
         await repository.UpdateAsync(doctor, cancellationToken);
 
