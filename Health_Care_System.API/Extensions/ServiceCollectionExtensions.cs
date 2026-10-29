@@ -3,6 +3,7 @@ using Health_Care_System.API.Services.Implementations;
 using Health_Care_System.API.Services.Interfaces;
 using Health_Care_System.Domain.Repositories.Interfaces;
 using Health_Care_System.Infrastructure.Persistence;
+using Health_Care_System.Infrastructure.Persistence.Interceptors;
 using Health_Care_System.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,15 @@ public static class ServiceCollectionExtensions
     )
     {
         services.AddDbContext<HealthCareContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection"))
+                .AddInterceptors(
+                    new SoftDeleteInterceptor()
+                    , new CreatedDateInterceptor() 
+                    , new ModifiedDateInceptor()
+                    )
+        );
+            
 
         return services;
     }
