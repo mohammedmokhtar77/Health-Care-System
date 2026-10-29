@@ -9,6 +9,4 @@ public abstract class AuditableEntity
     public string? ModifiedBy { get; set; } 
     
     public bool IsDeleted { get; set; }
-    public string? DeletedBy { get; set; }
-    public DateTimeOffset? DeletedDate { get; set; }
 }
