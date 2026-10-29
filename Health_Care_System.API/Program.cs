@@ -1,4 +1,5 @@
 using Health_Care_System.API.Extensions;
+using Health_Care_System.API.Middlewares;
 using Health_Care_System.Infrastructure.Persistence;
 using Health_Care_System.Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,10 @@ public class Program
         }
         
         await app.MigrateAndSeedDatabaseAsync();
+        
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        app.UseMiddleware<RequestIdHeaderMiddleware>();
+        app.UseMiddleware<RequestTimingMiddleware>();
         
         app.UseHttpsRedirection();
 
