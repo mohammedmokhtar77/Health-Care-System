@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="700" viewBox="0 0 1120 700" role="img" aria-labelledby="title description">
+  <title id="title">Health Care System class diagram</title>
+  <desc id="description">Patient and Doctor each have many Appointments. The domain entities inherit shared audit fields from AuditableEntity.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f5f8fc}.card{fill:#fff;stroke:#cbd5e1;stroke-width:2}.head{fill:#0f766e}.head2{fill:#155e75}.head3{fill:#334155}.title{font:700 20px Segoe UI,Arial;fill:#fff}.text{font:15px Segoe UI,Arial;fill:#1e293b}.muted{font:13px Segoe UI,Arial;fill:#64748b}.line{stroke:#475569;stroke-width:2;fill:none}.dash{stroke:#64748b;stroke-width:2;stroke-dasharray:7 6;fill:none}.label{font:13px Segoe UI,Arial;fill:#475569}
+    </style>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#475569"/></marker>
+  </defs>
+  <rect class="bg" width="1120" height="700" rx="18"/>
+  <text x="48" y="54" style="font:700 28px Segoe UI,Arial;fill:#0f172a">Health Care System — Domain Class Diagram</text>
+  <text x="48" y="80" class="muted">Core entities and relationships represented in the current domain model</text>
+
+  <!-- Shared audit base -->
+  <rect x="390" y="112" width="340" height="172" rx="10" class="card"/>
+  <path d="M400 112h320a10 10 0 0 1 10 10v34H390v-34a10 10 0 0 1 10-10z" class="head3"/>
+  <text x="410" y="140" class="title">AuditableEntity</text>
+  <text x="410" y="180" class="text">CreatedDate : DateTimeOffset?</text>
+  <text x="410" y="204" class="text">CreatedBy : string?</text>
+  <text x="410" y="228" class="text">ModifiedDate : DateTimeOffset?</text>
+  <text x="410" y="252" class="text">ModifiedBy : string?  ·  IsDeleted : bool</text>
+
+  <!-- Patient -->
+  <rect x="70" y="400" width="300" height="210" rx="10" class="card"/>
+  <path d="M80 400h280a10 10 0 0 1 10 10v38H70v-38a10 10 0 0 1 10-10z" class="head"/>
+  <text x="94" y="430" class="title">Patient</text>
+  <text x="94" y="474" class="text">Id : int</text>
+  <text x="94" y="500" class="text">Name : string</text>
+  <text x="94" y="526" class="text">DateOfBirth : DateTime</text>
+  <text x="94" y="566" class="text">Appointments : ICollection&lt;Appointment&gt;</text>
+  <text x="94" y="590" class="muted">inherits AuditableEntity</text>
+
+  <!-- Appointment -->
+  <rect x="410" y="400" width="300" height="210" rx="10" class="card"/>
+  <path d="M420 400h280a10 10 0 0 1 10 10v38H410v-38a10 10 0 0 1 10-10z" class="head2"/>
+  <text x="434" y="430" class="title">Appointment</text>
+  <text x="434" y="474" class="text">PatientId : int  ·  composite key</text>
+  <text x="434" y="500" class="text">DoctorId : int  ·  composite key</text>
+  <text x="434" y="526" class="text">AppointmentDate : DateTime</text>
+  <text x="434" y="566" class="text">Patient : Patient  ·  Doctor : Doctor</text>
+  <text x="434" y="590" class="muted">inherits AuditableEntity</text>
+
+  <!-- Doctor -->
+  <rect x="750" y="400" width="300" height="210" rx="10" class="card"/>
+  <path d="M760 400h280a10 10 0 0 1 10 10v38H750v-38a10 10 0 0 1 10-10z" class="head"/>
+  <text x="774" y="430" class="title">Doctor</text>
+  <text x="774" y="474" class="text">Id : int</text>
+  <text x="774" y="500" class="text">Name : string</text>
+  <text x="774" y="526" class="text">Specialization : string</text>
+  <text x="774" y="566" class="text">Appointments : ICollection&lt;Appointment&gt;</text>
+  <text x="774" y="590" class="muted">inherits AuditableEntity</text>
+
+  <!-- Inheritance connectors -->
+  <path d="M220 400V335H520V284" class="dash" marker-end="url(#arrow)"/>
+  <path d="M560 400V284" class="dash" marker-end="url(#arrow)"/>
+  <path d="M900 400V335H600V284" class="dash" marker-end="url(#arrow)"/>
+  <text x="80" y="324" class="label">inheritance</text>
+
+  <!-- Relationships -->
+  <path d="M370 505H410" class="line"/>
+  <text x="374" y="493" class="label">1</text>
+  <text x="394" y="493" class="label">0..*</text>
+  <path d="M710 505H750" class="line"/>
+  <text x="714" y="493" class="label">0..*</text>
+  <text x="735" y="493" class="label">1</text>
+  <text x="330" y="550" class="label">has appointments</text>
+  <text x="715" y="550" class="label">assigned to</text>
+</svg>
