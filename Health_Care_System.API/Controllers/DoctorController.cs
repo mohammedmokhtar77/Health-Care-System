@@ -1,5 +1,7 @@
 using Health_Care_System.API.DTOs.Doctors;
 using Health_Care_System.API.Services.Interfaces;
+using Health_Care_System.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Health_Care_System.API.Controllers;
@@ -10,6 +12,7 @@ public class
     DoctorController( IDoctorService service) 
     : ControllerBase
 {
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Doctor},{Roles.Receptionist},{Roles.Patient}")]
     [HttpGet]
     public async Task<IActionResult> GetAllDoctors(
         int pageNumber, int pageSize 
@@ -25,6 +28,7 @@ public class
         return Ok(result.Data);
     }
     
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Doctor},{Roles.Receptionist},{Roles.Patient}")]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<DoctorDto>> GetDoctor(int id, CancellationToken cancellationToken)
     {
@@ -37,6 +41,7 @@ public class
         return Ok(result.Data);
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpPost]
     public async Task<ActionResult<DoctorDto>> Create(CreateDoctorDto doctorDto , CancellationToken cancellationToken)
     {
@@ -55,6 +60,7 @@ public class
     }
 
     
+    [Authorize(Roles = Roles.Admin)]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(
         int id,
@@ -77,6 +83,7 @@ public class
         return NoContent();
     }
 
+    [Authorize(Roles = Roles.Admin)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(
         int id,
