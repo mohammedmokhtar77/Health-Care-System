@@ -1,15 +1,17 @@
 using Health_Care_System.API.DTOs.Appointments;
 using Health_Care_System.API.Services.Interfaces;
+using Health_Care_System.Domain.Entities.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Health_Care_System.API.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
 public class AppointmentsController(
     IAppointmentService appointmentService) : ControllerBase
 {
     [HttpGet]
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Doctor},{Roles.Receptionist}")]
     public async Task<IActionResult> GetAppointments(
         CancellationToken cancellationToken)
     {
@@ -23,6 +25,7 @@ public class AppointmentsController(
     }
 
     [HttpGet("{patientId:int}/{doctorId:int}")]
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Doctor},{Roles.Receptionist}")]
     public async Task<IActionResult> GetAppointment(
         int patientId,
         int doctorId,
@@ -45,6 +48,7 @@ public class AppointmentsController(
     }
 
     [HttpPost]
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Receptionist},{Roles.Patient}")]
     public async Task<IActionResult> CreateAppointment(
         CreateAppointmentDto dto,
         CancellationToken cancellationToken)
@@ -69,6 +73,7 @@ public class AppointmentsController(
     }
 
     [HttpPut("{patientId:int}/{doctorId:int}")]
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Receptionist}")]
     public async Task<IActionResult> UpdateAppointment(
         int patientId,
         int doctorId,
@@ -93,6 +98,7 @@ public class AppointmentsController(
     }
 
     [HttpDelete("{patientId:int}/{doctorId:int}")]
+    [Authorize(Roles = $"{Roles.Admin},{Roles.Receptionist}")]
     public async Task<IActionResult> DeleteAppointment(
         int patientId,
         int doctorId,
