@@ -20,6 +20,9 @@ public class Program
 
         builder.Services.AddSwaggerServices();
         builder.Services.AddDatabaseServices(builder.Configuration);
+        builder.Services.AddAuthenticationServices(builder.Configuration);
+        builder.Services.AddScoped<Health_Care_System.API.Services.Interfaces.IAuthService,
+            Health_Care_System.API.Services.Implementations.AuthService>();
         builder.Services.AddRepositoryServices();
         builder.Services.AddMappingServices();
 
@@ -35,12 +38,13 @@ public class Program
         
         await app.MigrateAndSeedDatabaseAsync();
         
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
-        app.UseMiddleware<RequestIdHeaderMiddleware>();
-        app.UseMiddleware<RequestTimingMiddleware>();
+        // app.UseMiddleware<ExceptionHandlingMiddleware>();
+        // app.UseMiddleware<RequestIdHeaderMiddleware>();
+        // app.UseMiddleware<RequestTimingMiddleware>();
         
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
         
         app.MapControllers();
